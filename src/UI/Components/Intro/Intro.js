@@ -63,6 +63,92 @@ Intro.onKeyDown = function OnKeyDown(event) {
 };
 
 /**
+ * Midgard: tip on how to play on a phone, only where it helps.
+ * - iOS Safari outside the home screen: Safari has no fullscreen outside video, so the way is
+ *   Share -> Add to Home Screen (apple-mobile-web-app-capable opens it without the bars).
+ * - Anything else on a touch screen, standing up: turn the device (RO is landscape). On Android
+ *   the tap on JOGAR AGORA already goes fullscreen and locks landscape.
+ * Closing it is remembered on this device.
+ */
+const PHONE_TIP_KEY = 'midgard.dicaCelular.fechada';
+
+/**
+ * @var {function|null} re-checks the phone tip on rotation (hooked while the intro is on screen)
+ */
+let _phoneTipUpdate = null;
+
+function setupPhoneTip(root) {
+	const tip = root.querySelector('.dica-celular');
+	if (!tip || !window.matchMedia || !matchMedia('(pointer: coarse)').matches) {
+		return;
+	}
+
+	try {
+		if (localStorage.getItem(PHONE_TIP_KEY) === '1') {
+			return;
+		}
+	} catch (e) {
+		// Storage blocked (private mode): show the tip every time.
+	}
+
+	// The game runs in an iframe of the same page: ask the top window how it was opened.
+	let top = window;
+	try {
+		top = window.top || window;
+	} catch (e) {
+		top = window;
+	}
+
+	const ua = navigator.userAgent;
+	const iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+	const safari = iOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA|FBAN|FBAV|Instagram/.test(ua);
+	const standalone =
+		top.navigator.standalone === true ||
+		top.matchMedia('(display-mode: standalone)').matches ||
+		top.matchMedia('(display-mode: fullscreen)').matches;
+	const iPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+	const title = tip.querySelector('.dica-titulo');
+	const text = tip.querySelector('.dica-texto');
+	const steps = tip.querySelector('.dica-passos');
+	const addToHome = safari && !standalone;
+
+	const update = () => {
+		const portrait = matchMedia('(orientation: portrait)').matches;
+
+		if (addToHome) {
+			title.textContent = 'Jogue em tela cheia no ' + (iPad ? 'iPad' : 'iPhone');
+			steps.hidden = false;
+			text.hidden = true;
+			tip.hidden = false;
+		} else if (portrait) {
+			title.textContent = 'Gire o aparelho';
+			steps.hidden = true;
+			text.hidden = false;
+			text.textContent = iOS
+				? 'O jogo é na horizontal.'
+				: 'O jogo é na horizontal. Ao tocar em JOGAR AGORA ele abre em tela cheia.';
+			tip.hidden = false;
+		} else {
+			tip.hidden = true;
+		}
+	};
+
+	tip.querySelector('.dica-fechar').addEventListener('click', () => {
+		tip.hidden = true;
+		try {
+			localStorage.setItem(PHONE_TIP_KEY, '1');
+		} catch (e) {
+			// Not remembered; it just shows again next time.
+		}
+		window.removeEventListener('resize', update);
+		_phoneTipUpdate = null;
+	});
+
+	_phoneTipUpdate = update;
+}
+
+/**
  * Show an overlay with fade-in
  */
 function showOverlay(el) {
@@ -113,6 +199,8 @@ Intro.init = function init() {
 	// ── Midgard: background art on the whole window, outside the 800x600 stage ──
 	root.querySelector('#intro').style.backgroundImage =
 		'url("' + new URL('./images/background-midgard.jpg', import.meta.url).href + '")';
+
+	setupPhoneTip(root);
 
 	// ── About overlay ──
 	const aboutOverlay = root.querySelector('.overlay.about');
@@ -312,6 +400,11 @@ Intro.onAppend = function onAppend() {
 	window.addEventListener('resize', _resizeHandler);
 	_resizeHandler();
 
+	if (_phoneTipUpdate) {
+		window.addEventListener('resize', _phoneTipUpdate);
+		_phoneTipUpdate();
+	}
+
 	// Wait for background image and fonts, then remove the HTML preloader.
 	let particleReady = false;
 	let fontsReady = false;
@@ -340,6 +433,9 @@ Intro.onRemove = function onRemove() {
 	if (_resizeHandler) {
 		window.removeEventListener('resize', _resizeHandler);
 		_resizeHandler = null;
+	}
+	if (_phoneTipUpdate) {
+		window.removeEventListener('resize', _phoneTipUpdate);
 	}
 	Particle.stop();
 

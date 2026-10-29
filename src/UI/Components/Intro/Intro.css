@@ -843,3 +843,111 @@
 	top: auto;
 	bottom: 90px;
 }
+
+/* Phone tip (Intro.js, setupPhoneTip): site panel, on top of the stage, counter-scaled like the
+   buttons so the text keeps its shape. Bigger standing up, where the page is drawn smaller. */
+#intro .dica-celular {
+	position: absolute;
+	top: 16px;
+	left: 50%;
+	z-index: 7;
+	width: max-content;
+	max-width: 440px;
+	padding: 14px 40px 14px 18px;
+	transform: translateX(-50%) scale(var(--cx, 1), var(--cy, 1));
+	transform-origin: top center;
+	font-family: 'Barlow', system-ui, sans-serif;
+	font-size: 15px;
+	line-height: 1.45;
+	color: var(--text-light);
+	background: rgba(13, 27, 46, 0.88); /* painel */
+	border: 1px solid var(--border-dim);
+	border-radius: 10px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(8px);
+}
+#intro .dica-celular[hidden],
+#intro .dica-celular [hidden] {
+	display: none;
+}
+#intro .dica-titulo {
+	margin: 0 0 6px;
+	font-weight: 700;
+	font-size: 1.05em;
+	letter-spacing: 0.04em;
+	color: var(--gold); /* aurora */
+}
+#intro .dica-texto {
+	margin: 0;
+	color: #a9c6dd; /* gelo-apagado */
+}
+#intro .dica-passos {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: passo;
+}
+#intro .dica-passos li {
+	position: relative;
+	padding-left: 2em;
+	margin: 0.25em 0;
+	counter-increment: passo;
+}
+#intro .dica-passos li::before {
+	content: counter(passo);
+	position: absolute;
+	left: 0;
+	top: 0.12em;
+	width: 1.65em;
+	height: 1.65em;
+	border-radius: 50%;
+	font-size: 0.8em;
+	font-weight: 700;
+	line-height: 1.65em;
+	text-align: center;
+	color: var(--bg-void);
+	background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+}
+#intro .dica-passos strong {
+	color: var(--gold-bright);
+	font-weight: 600;
+}
+#intro .dica-icone {
+	width: 1.2em;
+	height: 1.2em;
+	vertical-align: -0.25em;
+	fill: none;
+	stroke: var(--gold);
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+#intro .dica-fechar {
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	font-size: 20px;
+	line-height: 26px;
+	color: var(--text-muted);
+	background: transparent;
+	border: 0;
+	border-radius: 6px;
+	cursor: pointer;
+}
+#intro .dica-fechar:hover {
+	color: var(--gold-bright);
+}
+#intro .dica-fechar:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 1px;
+}
+@media (orientation: portrait) {
+	#intro .dica-celular {
+		top: 40px;
+		font-size: 24px;
+		max-width: 560px;
+	}
+}
