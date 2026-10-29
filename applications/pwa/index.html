@@ -3,15 +3,36 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta charset="UTF-8" />
-		<title>Progressive Web App - roBrowserLegacy</title>
+		<title>Midgard Eternal</title>
 		<link rel="icon" type="image/png" href="./icon.png" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<script type="text/javascript">
+			// Midgard: the RO interface is drawn in fixed CSS pixels and needs about 640 of height. A phone
+			// lying down has ~400, so the windows came out huge and the char select's play button fell off
+			// the screen. On touch screens, lay the page out at that height and let the browser scale it to fit.
+			(function () {
+				if (!window.matchMedia || !matchMedia('(pointer: coarse)').matches) return;
+				var ALTURA = 640;
+				var meta = document.querySelector('meta[name="viewport"]');
+				function ajusta() {
+					var curto = Math.min(screen.width, screen.height);
+					var longo = Math.max(screen.width, screen.height);
+					if (curto >= ALTURA) return;
+					var deitado = matchMedia('(orientation: landscape)').matches;
+					// Standing up, RO does not fit anyway: just keep the same scale as lying down.
+					var largura = deitado ? Math.round((ALTURA * longo) / curto) : ALTURA;
+					meta.content = 'width=' + largura + ', user-scalable=no';
+				}
+				ajusta();
+				window.addEventListener('orientationchange', function () { setTimeout(ajusta, 200); });
+			})();
+		</script>
 		<meta name="HandheldFriendly" content="true" />
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-		<meta name="apple-mobile-web-app-title" content="roBrowser" />
+		<meta name="apple-mobile-web-app-title" content="Midgard Eternal" />
 		<meta name="mobile-web-app-capable" content="yes" />
 
 		<meta name="description" content="roBrowser" />

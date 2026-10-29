@@ -104,11 +104,15 @@ Intro.init = function init() {
 		const link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.href =
-			'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap';
+			'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Barlow:wght@400;600;700&display=swap';
 		document.head.appendChild(link);
 	}
 
 	const root = this._shadow;
+
+	// ── Midgard: background art on the whole window, outside the 800x600 stage ──
+	root.querySelector('#intro').style.backgroundImage =
+		'url("' + new URL('./images/background-midgard.jpg', import.meta.url).href + '")';
 
 	// ── About overlay ──
 	const aboutOverlay = root.querySelector('.overlay.about');
@@ -237,6 +241,20 @@ Intro.init = function init() {
 
 	// ── Start roBrowser ──
 	root.querySelector('.btn_play').addEventListener('click', () => {
+		// Midgard: on a phone the tap on JOGAR AGORA also goes fullscreen and lying down. The roBrowser
+		// only did it by itself on screens of up to 800 px (Core/Mobile.js), and today's phones are bigger.
+		// The iPhone has no fullscreen API outside video: there it is "Adicionar a Tela de Inicio".
+		if (window.matchMedia && matchMedia('(pointer: coarse)').matches && !Context.isFullScreen()) {
+			const el = document.documentElement;
+			const pedido = el.requestFullscreen ? el.requestFullscreen() : null;
+			if (pedido && pedido.then) {
+				pedido
+					.then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'))
+					.catch(() => {});
+			} else if (el.webkitRequestFullscreen) {
+				el.webkitRequestFullscreen();
+			}
+		}
 		showOverlay(root.querySelector('.overlay.loading'));
 		Intro.onFilesSubmit(Intro.files);
 	});

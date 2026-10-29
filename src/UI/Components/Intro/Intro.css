@@ -734,3 +734,112 @@
 #intro .settings-content {
 	scale: var(--cx, 1) var(--cy, 1);
 }
+
+/* ══════════════════════════════════════════
+   MIDGARD ETERNAL — identity of the site (midgard-site/DESIGN.md, "A Aurora de Midgard"):
+   blue night, cyan aurora as the only brand colour, Barlow on buttons.
+   ══════════════════════════════════════════ */
+/* The art (set from Intro.js) covers the whole window at full resolution, anchored bottom-right
+   so the Midgard logo in that corner is never cropped. The tokens keep their gold-* names from
+   upstream; the values are the site's cyan ramp. */
+#intro {
+	--gold: #78e6ff; /* aurora */
+	--gold-bright: #9fe9ff; /* aurora-clara */
+	--gold-dark: #2a8fd6; /* azul-profundo */
+	--bg-void: #080a0f; /* noite */
+	--bg-deep: #0c1017; /* noite-funda */
+	--bg-panel: #0d1b2e; /* painel */
+	--bg-card: #122438; /* painel-elevado */
+	--border-dim: rgba(120, 230, 255, 0.18);
+	--border-glow: rgba(120, 230, 255, 0.5);
+	--text-light: #dff2ff; /* gelo */
+	--text-muted: #6f95b3; /* nevoa */
+
+	position: fixed;
+	inset: 0;
+	background-color: var(--bg-void);
+	background-size: cover;
+	background-position: right bottom;
+	background-repeat: no-repeat;
+}
+#intro .intro {
+	font-family: 'Barlow', system-ui, sans-serif;
+}
+
+/* Every file comes from the remote client, so the drop zone has no use. */
+#intro .drop-zone {
+	display: none;
+}
+
+/* Settings: the site's secondary button, top-right (bottom-right belongs to the logo). */
+#intro .btn_settings {
+	top: 12px;
+	bottom: auto;
+	background: rgba(18, 36, 56, 0.85); /* painel-elevado */
+	border: 1px solid #274766; /* linha-forte */
+	border-radius: 6px;
+	color: #a9c6dd; /* gelo-apagado */
+	font-size: 24px;
+	backdrop-filter: blur(6px);
+}
+#intro .btn_settings:hover {
+	border-color: var(--gold-dark);
+	color: var(--gold-bright);
+}
+#intro .btn_settings:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 2px;
+}
+/* Cinzel never on a button (DESIGN.md, The Body Is Barlow Rule). */
+#intro .settings .btn_save {
+	font-family: 'Barlow', system-ui, sans-serif;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	color: var(--bg-void);
+	background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+	border-radius: 8px;
+}
+
+/* The credits stay reachable (GPL: Appropriate Legal Notices), but quiet. */
+#intro .btn_about {
+	background: transparent;
+	border-color: transparent;
+	color: var(--text-muted);
+	opacity: 0.45;
+	font-size: 16px;
+}
+#intro .btn_about:hover {
+	opacity: 1;
+	color: var(--gold);
+	border-color: transparent;
+}
+
+/* Primary button, large: aurora -> azul-profundo, text in noite, the action glow. Below the
+   characters, clear of the logo. */
+#intro .btn_play {
+	top: auto;
+	bottom: 26px;
+	padding: 0 40px;
+	height: 48px;
+	font-family: 'Barlow', system-ui, sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	color: var(--bg-void);
+	background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+	border-radius: 8px;
+	box-shadow: 0 0 32px rgba(120, 230, 255, 0.35);
+	white-space: nowrap;
+}
+#intro .btn_play:hover {
+	filter: brightness(1.1);
+	box-shadow: 0 0 40px rgba(120, 230, 255, 0.5);
+}
+#intro .btn_play:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 2px;
+}
+#intro .msg {
+	top: auto;
+	bottom: 90px;
+}

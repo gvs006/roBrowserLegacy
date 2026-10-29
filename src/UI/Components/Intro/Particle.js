@@ -51,7 +51,9 @@ class Particle {
 
 		this.bg = new Image();
 		this.bg.decoding = 'async';
-		this.bg.src = new URL('./images/background.jpg', import.meta.url).href;
+		// Midgard: the background is the #intro element's CSS background (full window, full resolution);
+		// it is still loaded here so the preloader waits for it.
+		this.bg.src = new URL('./images/background-midgard.jpg', import.meta.url).href;
 		this.bg.onload = function () {
 			this.ready = true;
 			if (onReady) onReady();
@@ -93,11 +95,6 @@ class Particle {
 		let i, count;
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
-		if (this.bg.ready) {
-			this.ctx.globalCompositeOperation = 'source-over';
-			this.ctx.drawImage(this.bg, 0, 0);
-			this.ctx.globalCompositeOperation = 'lighter';
-		}
 
 		for (i = 0, count = this.list.length; i < count; ++i) {
 			this.list[i].update(now - this.tick, 0, 0, this.width, this.height);
